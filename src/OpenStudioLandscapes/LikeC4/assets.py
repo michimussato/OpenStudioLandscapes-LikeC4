@@ -200,7 +200,7 @@ def build_docker_image(
 
     # @formatter:off
     docker_file_str = textwrap.dedent(
-        """
+        """\
         # {auto_generated}
         # {dagster_url}
         FROM {parent_image} AS {image_name}
@@ -238,7 +238,7 @@ def build_docker_image(
         # https://stackoverflow.com/a/40454758/2207196
         ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh", "yarn", "dev"]
         CMD []
-    """
+        """
     ).format(
         apt_install_str_likec4=apt_install_str_likec4,
         # apt_install_str_yarn=apt_install_str_yarn,
@@ -464,7 +464,7 @@ def compose_likec4(
                 "hostname": host_name,
                 "domainname": env.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": "${REGISTRY_NAMESPACE_OVERRIDE:-docker.io/openstudiolandscapes}/%s:%s" % (build['image_name'], build['image_tags'][0]),
+                "image": "${DOT_OVERRIDES_REGISTRY_NAMESPACE:-docker.io/openstudiolandscapes}/%s:%s" % (build['image_name'], build['image_tags'][0]),
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(volumes_dict),
                 "command": [
