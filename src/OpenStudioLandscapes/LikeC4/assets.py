@@ -5,7 +5,7 @@ import shutil
 import textwrap
 import time
 import urllib.parse
-from typing import Generator
+from typing import Generator, Any
 
 import yaml
 from dagster import (
@@ -200,7 +200,7 @@ def build_docker_image(
 
     # @formatter:off
     docker_file_str = textwrap.dedent(
-        """
+        """\
         # {auto_generated}
         # {dagster_url}
         FROM {parent_image} AS {image_name}
@@ -238,7 +238,7 @@ def build_docker_image(
         # https://stackoverflow.com/a/40454758/2207196
         ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh", "yarn", "dev"]
         CMD []
-    """
+        """
     ).format(
         apt_install_str_likec4=apt_install_str_likec4,
         # apt_install_str_yarn=apt_install_str_yarn,
@@ -427,6 +427,31 @@ def compose_likec4(
         ]
     }
 
+    # For portability, convert absolute volume paths to relative paths
+
+    _volume_relative = []
+
+    for v in volumes_dict["volumes"]:
+
+        host, container = v.split(":", maxsplit=1)
+
+        volume_dir_host_rel_path = get_relative_path_via_common_root(
+            context=context,
+            path_src=pathlib.Path(env["DOCKER_COMPOSE"]),
+            path_dst=pathlib.Path(host),
+            path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
+        )
+
+        _volume_relative.append(
+            f"{volume_dir_host_rel_path.as_posix()}:{container}",
+        )
+
+    volumes_dict = {
+        "volumes": [
+            *_volume_relative,
+        ]
+    }
+
     service_name = "likec4"
     container_name = "--".join([service_name, env.get("LANDSCAPE", "default")])
     host_name = ".".join([service_name, env["ROOT_DOMAIN"]])
@@ -439,7 +464,7 @@ def compose_likec4(
                 "hostname": host_name,
                 "domainname": env.get("ROOT_DOMAIN"),
                 "restart": "always",
-                "image": f"{build['image_prefix_full']}{build['image_name']}:{build['image_tags'][0]}",
+                "image": "${DOT_OVERRIDES_REGISTRY_NAMESPACE:-docker.io/openstudiolandscapes}/%s:%s" % (build['image_name'], build['image_tags'][0]),
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(volumes_dict),
                 "command": [
@@ -527,5 +552,50 @@ def docker_image(
         asset_key=context.asset_key,
         metadata={
             "docker_image": MetadataValue.json(_docker_image),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+    },
+)
+def cmd_extend(
+        context: AssetExecutionContext,
+) -> Generator[Output[list[Any]] | AssetMaterialization | Any, Any, None]:
+
+    ret = []
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+    },
+)
+def cmd_append(
+        context: AssetExecutionContext,
+) -> Generator[Output[dict[str, list[Any]]] | AssetMaterialization | Any, Any, None]:
+
+    ret = {
+        "cmd": [],
+        "exclude_from_quote": []
+    }
+
+    yield Output(ret)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.json(ret),
         },
     )
