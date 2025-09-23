@@ -452,7 +452,7 @@ def compose_likec4(
 
     service_name = "likec4"
     container_name = "--".join([service_name, env.get("LANDSCAPE", "default")])
-    host_name = ".".join([service_name, env["ROOT_DOMAIN"]])
+    host_name = ".".join([env["LIKEC4_HOSTNAME"] or service_name, env["ROOT_DOMAIN"]])
 
     docker_dict = {
         # "networks": compose_networks.get("networks", []),
