@@ -38,6 +38,9 @@ ASSET_HEADER = {
 FEATURE_CONFIGS = {
     OpenStudioLandscapesConfig.DEFAULT: {
         "DOCKER_USE_CACHE": DOCKER_USE_CACHE,
+        "HOSTNAME": "likec4",
+        "TELEPORT_ENTRY_POINT_HOST": "{{HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
+        "TELEPORT_ENTRY_POINT_PORT": "{{LIKEC4_DEV_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
         "CONFIGS_ROOT": pathlib.Path(
             "{DOT_FEATURES}",
             FEATURE,
@@ -46,12 +49,9 @@ FEATURE_CONFIGS = {
         )
         .expanduser()
         .as_posix(),
-        "LIKEC4_HOSTNAME": "likec4",
         "LIKEC4_DEV_PORT_HOST": "4567",
         "LIKEC4_DEV_PORT_CONTAINER": "4567",
         "LIKEC4_HOST": "0.0.0.0",
-        "TELEPORT_ENTRY_POINT_HOST": "{{LIKEC4_HOSTNAME}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
-        "TELEPORT_ENTRY_POINT_PORT": "{{LIKEC4_DEV_PORT_HOST}}",  # Either a hardcoded str or a ref to a Variable (with double {{ }}!)
     },
 }
 # @formatter:on
