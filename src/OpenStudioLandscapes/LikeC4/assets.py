@@ -417,11 +417,11 @@ def compose_likec4(
         network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
         ports_dict = {
             "ports": [
-                f"{env.get('LIKEC4_DEV_PORT_HOST')}:{env.get('LIKEC4_DEV_PORT_CONTAINER')}",
+                f"{env['LIKEC4_DEV_PORT_HOST']}:{env['LIKEC4_DEV_PORT_CONTAINER']}",
             ]
         }
     elif "network_mode" in compose_networks:
-        network_dict = {"network_mode": compose_networks.get("network_mode")}
+        network_dict = {"network_mode": compose_networks["network_mode"]}
 
     volumes_dict = {"volumes": []}
 
@@ -462,7 +462,7 @@ def compose_likec4(
             service_name: {
                 "container_name": container_name,
                 "hostname": host_name,
-                "domainname": env.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN"),
+                "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
                 "restart": "always",
                 "image": "${DOT_OVERRIDES_REGISTRY_NAMESPACE:-docker.io/openstudiolandscapes}/%s:%s"
                 % (build["image_name"], build["image_tags"][0]),
@@ -470,16 +470,16 @@ def compose_likec4(
                 **copy.deepcopy(volumes_dict),
                 "command": [
                     "--host",
-                    env.get("LIKEC4_HOST"),
+                    env["LIKEC4_HOST"],
                     "--port",
-                    env.get("LIKEC4_DEV_PORT_CONTAINER"),
+                    env["LIKEC4_DEV_PORT_CONTAINER"],
                 ],
                 "healthcheck": {
                     "test": [
                         "CMD",
                         "curl",
                         "-f",
-                        f"http://localhost:{env.get('LIKEC4_DEV_PORT_CONTAINER')}",
+                        f"http://localhost:{env['LIKEC4_DEV_PORT_CONTAINER']}",
                     ],
                     "interval": "10s",
                     "timeout": "2s",
