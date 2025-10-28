@@ -1,0 +1,24 @@
+project:
+  description: LikeC4 Feature for OpenStudioLandscapes
+  name: OpenStudioLandscapes-LikeC4
+  optional-dependencies:
+    dev:
+    - OpenStudioLandscapes-LikeC4[testing]
+    - OpenStudioLandscapes-LikeC4[lint]
+    - OpenStudioLandscapes-LikeC4[nox]
+    - OpenStudioLandscapes-LikeC4[sbom]
+    - OpenStudioLandscapes-LikeC4[coverage]
+    - OpenStudioLandscapes-LikeC4[readme]
+    nox:
+    - OpenStudioLandscapes-LikeC4[testing]
+    sbom:
+    - OpenStudioLandscapes-LikeC4[graphviz]
+  urls:
+    Homepage: https://github.com/michimussato/OpenStudioLandscapes-LikeC4
+tool:
+  dagster:
+    code_location_name: OpenStudioLandscapes-LikeC4
+    module_name: OpenStudioLandscapes.LikeC4.definitions
+  setuptools:
+    packages:
+    - OpenStudioLandscapes.LikeC4
