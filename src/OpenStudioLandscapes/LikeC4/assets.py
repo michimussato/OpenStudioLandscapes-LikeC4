@@ -371,6 +371,9 @@ def compose_likec4(
 ) -> Generator[Output[dict] | AssetMaterialization, None, None]:
     """ """
 
+    context.log.warning(f"{build = }")
+    # build = {'image_name': 'likec4_build_docker_image', 'image_prefixes': 'registry.openstudiolandscapes.lan:5000/openstudiolandscapes/', 'image_tags': ['2025-11-17-13-20-22-c96f238d9b634fa6b4f9bda78e67155e'], 'image_parent': {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': 'registry.openstudiolandscapes.lan:5000/openstudiolandscapes/', 'image_tags': ['2025-11-17-13-20-22-c96f238d9b634fa6b4f9bda78e67155e'], 'image_parent': {}}}
+
     network_dict = {}
     ports_dict = {}
 
@@ -427,7 +430,7 @@ def compose_likec4(
                 "restart": "always",
                 # "image": "${DOT_OVERRIDES_REGISTRY_NAMESPACE:-docker.io/openstudiolandscapes}/%s:%s"
                 # % (build["image_name"], build["image_tags"][0]),
-                "image": "%s:%s" % (build["image_name"], build["image_tags"][0]),
+                "image": "%s%s:%s" % (build["image_prefixes"], build["image_name"], build["image_tags"][0]),
                 **copy.deepcopy(network_dict),
                 **copy.deepcopy(volumes_dict),
                 "command": [
