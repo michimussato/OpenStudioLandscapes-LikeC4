@@ -167,9 +167,6 @@ The following variables are being declared in `OpenStudioLandscapes.LikeC4.const
 | Variable                    | Type   | Value                                                        |
 | :-------------------------- | :----- | :----------------------------------------------------------- |
 | `DOCKER_USE_CACHE`          | `bool` | `False`                                                      |
-| `HOSTNAME`                  | `str`  | `likec4`                                                     |
-| `TELEPORT_ENTRY_POINT_HOST` | `str`  | `{{HOSTNAME}}`                                               |
-| `TELEPORT_ENTRY_POINT_PORT` | `str`  | `{{LIKEC4_DEV_PORT_HOST}}`                                   |
 | `CONFIGS_ROOT`              | `str`  | `{DOT_FEATURES}/OpenStudioLandscapes-LikeC4/.payload/config` |
 | `LIKEC4_DEV_PORT_HOST`      | `str`  | `4567`                                                       |
 | `LIKEC4_DEV_PORT_CONTAINER` | `str`  | `4567`                                                       |
