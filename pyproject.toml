@@ -49,7 +49,6 @@ dev = [
     "OpenStudioLandscapes-LikeC4[readme]",
     "OpenStudioLandscapes-LikeC4[sbom]",
     "OpenStudioLandscapes-LikeC4[testing]",
-    "dagster-webserver==1.9.11",
 ]
 graphviz = [
     "graphviz",
