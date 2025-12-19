@@ -296,7 +296,7 @@ def compose_likec4(
                 "hostname": host_name,
                 "domainname": config_engine.openstudiolandscapes__domain_lan,
                 # "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
-                "image": CONFIG.likec4_docker_image,
+                "image": CONFIG.likec4_docker_image.value,
                 "restart": DockerComposePolicies.RESTART_POLICY.UNLESS_STOPPED.value,
                 "environment": {
                     "CHOKIDAR_USEPOLLING": str(CONFIG.likec4_LIKEC4_CHOKIDAR_USEPOLLING),
