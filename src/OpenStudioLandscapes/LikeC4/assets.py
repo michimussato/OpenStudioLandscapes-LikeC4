@@ -1,10 +1,9 @@
 import copy
-import json
+import enum
 import pathlib
 import shutil
-import textwrap
-import urllib.parse
-from typing import Any, Generator, Dict, List
+import subprocess
+from typing import Generator, Dict, List, Union
 
 import yaml
 from dagster import (
@@ -14,308 +13,101 @@ from dagster import (
     AssetMaterialization,
     MetadataValue,
     Output,
-    asset,
+    asset, AssetsDefinition,
 )
 from OpenStudioLandscapes.engine.common_assets.compose import get_compose
-from OpenStudioLandscapes.engine.common_assets.constants import get_constants
 from OpenStudioLandscapes.engine.common_assets.docker_compose_graph import (
     get_docker_compose_graph,
 )
-from OpenStudioLandscapes.engine.common_assets.docker_config import get_docker_config
-from OpenStudioLandscapes.engine.common_assets.docker_config_json import (
-    get_docker_config_json,
-)
-from OpenStudioLandscapes.engine.common_assets.env import get_env
-from OpenStudioLandscapes.engine.common_assets.feature_out import get_feature_out
-from OpenStudioLandscapes.engine.common_assets.group_in import get_group_in
+from OpenStudioLandscapes.engine.common_assets.feature_out import get_feature_out_v2
+from OpenStudioLandscapes.engine.common_assets.group_in import get_feature_in, get_feature_in_parent
 from OpenStudioLandscapes.engine.common_assets.group_out import get_group_out
+from OpenStudioLandscapes.engine.config.models import ConfigEngine
 from OpenStudioLandscapes.engine.constants import *
 from OpenStudioLandscapes.engine.enums import *
-from OpenStudioLandscapes.engine.policies.retry import build_docker_image_retry_policy
 from OpenStudioLandscapes.engine.utils import *
 from OpenStudioLandscapes.engine.utils.docker.compose_dicts import *
 
+from OpenStudioLandscapes.LikeC4.config.models import CONFIG_STR, Config
 from OpenStudioLandscapes.LikeC4.constants import *
 
-constants = get_constants(
+from OpenStudioLandscapes.engine.common_assets.compose_scope import (
+get_compose_scope_group__cmd,
+)
+
+from OpenStudioLandscapes.engine.common_assets.feature import (
+get_feature__CONFIG
+)
+
+# https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
+yaml.SafeDumper.add_multi_representer(
+    data_type=enum.Enum,
+    representer=yaml.representer.SafeRepresenter.represent_str,
+)
+
+
+compose_scope_group__cmd: AssetsDefinition = get_compose_scope_group__cmd(
+    ASSET_HEADER=ASSET_HEADER,
+)
+
+CONFIG: AssetsDefinition = get_feature__CONFIG(
+    ASSET_HEADER=ASSET_HEADER,
+    CONFIG_STR=CONFIG_STR,
+    search_model_of_type=Config,
+)
+
+feature_in: AssetsDefinition = get_feature_in(
+    ASSET_HEADER=ASSET_HEADER,
+    ASSET_HEADER_BASE=ASSET_HEADER_BASE,
+    ASSET_HEADER_FEATURE_IN={},
+)
+
+group_out: AssetsDefinition = get_group_out(
     ASSET_HEADER=ASSET_HEADER,
 )
 
 
-docker_config = get_docker_config(
+docker_compose_graph: AssetsDefinition = get_docker_compose_graph(
     ASSET_HEADER=ASSET_HEADER,
 )
 
 
-group_in = get_group_in(
-    ASSET_HEADER=ASSET_HEADER,
-    ASSET_HEADER_PARENT=ASSET_HEADER_BASE,
-    input_name=str(GroupIn.BASE_IN),
-)
-
-
-env = get_env(
+compose: AssetsDefinition = get_compose(
     ASSET_HEADER=ASSET_HEADER,
 )
 
 
-group_out = get_group_out(
+feature_out_v2: AssetsDefinition = get_feature_out_v2(
     ASSET_HEADER=ASSET_HEADER,
 )
 
 
-docker_compose_graph = get_docker_compose_graph(
+# Produces
+# - feature_in_parent
+# - CONFIG_PARENT
+# if ConfigParent is or type FeatureBaseModel
+feature_in_parent: Union[AssetsDefinition, None] = get_feature_in_parent(
     ASSET_HEADER=ASSET_HEADER,
+    config_parent=ConfigParent,
 )
-
-
-compose = get_compose(
-    ASSET_HEADER=ASSET_HEADER,
-)
-
-
-feature_out = get_feature_out(
-    ASSET_HEADER=ASSET_HEADER,
-    feature_out_ins={
-        "env": Dict,
-        "compose": Dict,
-        "group_in": Dict,
-    },
-)
-
-
-docker_config_json = get_docker_config_json(
-    ASSET_HEADER=ASSET_HEADER,
-)
-
-
-@asset(
-    **ASSET_HEADER,
-)
-def apt_packages(
-    context: AssetExecutionContext,
-) -> Generator[Output[Dict[str, List[str]]] | AssetMaterialization, None, None]:
-    """ """
-
-    _apt_packages = {}
-
-    _apt_packages["likec4"] = [
-        "unzip",
-        "gpg",
-        "gpg-agent",
-    ]
-
-    # _apt_packages["yarn"] = [
-    #     # # yarn:
-    #     # # https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable
-    #     # "nodejs",
-    #     # "npm",
-    #     "yarn=10.6.2",
-    # ]
-
-    yield Output(_apt_packages)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(_apt_packages),
-        },
-    )
 
 
 @asset(
     **ASSET_HEADER,
     ins={
-        "env": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
-        ),
-        "docker_config_json": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "docker_config_json"]),
-        ),
-        "docker_image": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "docker_image"])
-        ),
-        "docker_config": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "docker_config"])
-        ),
-        "apt_packages": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "apt_packages"]),
-        ),
-    },
-    retry_policy=build_docker_image_retry_policy,
-)
-def build_docker_image(
-    context: AssetExecutionContext,
-    env: Dict,  # pylint: disable=redefined-outer-name
-    docker_config_json: pathlib.Path,  # pylint: disable=redefined-outer-name
-    docker_image: Dict,  # pylint: disable=redefined-outer-name
-    docker_config: DockerConfig,  # pylint: disable=redefined-outer-name
-    apt_packages: Dict[str, List[str]],  # pylint: disable=redefined-outer-name
-) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
-    """ """
-
-    docker_file = pathlib.Path(
-        env["DOT_LANDSCAPES"],
-        env.get("LANDSCAPE", "default"),
-        f"{ASSET_HEADER['group_name']}__{'__'.join(ASSET_HEADER['key_prefix'])}",
-        "__".join(context.asset_key.path),
-        "Dockerfiles",
-        "Dockerfile",
-    )
-
-    docker_file.parent.mkdir(parents=True, exist_ok=True)
-
-    #################################################
-
-    (
-        image_name,
-        image_prefixes,
-        tags,
-        build_base_parent_image_prefix,
-        build_base_parent_image_name,
-        build_base_parent_image_tags,
-    ) = get_image_metadata(
-        context=context,
-        docker_image=docker_image,
-        docker_config=docker_config,
-        env=env,
-    )
-
-    #################################################
-
-    apt_install_str_likec4: str = get_apt_install_str(
-        apt_install_packages=apt_packages["likec4"],
-    )
-
-    # apt_install_str_yarn: str = get_apt_install_str(
-    #     apt_install_packages=apt_packages["yarn"],
-    # )
-
-    # @formatter:off
-    docker_file_str = textwrap.dedent(
-        """\
-        # {auto_generated}
-        # {dagster_url}
-        FROM {parent_image} AS {image_name}
-        LABEL authors="{AUTHOR}"
-
-        RUN apt-get update && apt-get upgrade -y
-
-        {apt_install_str_likec4}
-
-        # # https://www.geeksforgeeks.org/how-to-install-yarn-on-ubuntu-20-04/
-        # # RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-        # RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-        # # RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-        # RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-        #
-        # RUN apt-get update && apt-get upgrade -y
-        #
-        # (apt_install_str_yarn)
-        #
-        # # # https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable
-        # # RUN npm install --global yarn@10.6.2
-        # # #  error This project's package.json defines "packageManager": "yarn@pnpm@10.6.2". However the current global version of Yarn is 1.22.22.
-
-        RUN apt-get clean
-
-        WORKDIR /ENTRYPOINT
-
-        COPY ./payload/setup.sh .
-        COPY ./payload/run.sh .
-
-        RUN chmod -R +x /ENTRYPOINT/*.sh
-
-        RUN /usr/bin/env bash /ENTRYPOINT/setup.sh
-
-        # https://stackoverflow.com/a/40454758/2207196
-        ENTRYPOINT ["/usr/bin/env", "bash", "/ENTRYPOINT/run.sh", "yarn", "dev"]
-        CMD []
-        """
-    ).format(
-        apt_install_str_likec4=apt_install_str_likec4,
-        # apt_install_str_yarn=apt_install_str_yarn,
-        auto_generated=f"AUTO-GENERATED by Dagster Asset {'__'.join(context.asset_key.path)}",
-        dagster_url=urllib.parse.quote(
-            f"http://localhost:3000/asset-groups/{'%2F'.join(context.asset_key.path)}",
-            safe=":/%",
-        ),
-        image_name=image_name,
-        # Todo: this won't work as expected if len(tags) > 1
-        parent_image=f"{build_base_parent_image_prefix}{build_base_parent_image_name}:{build_base_parent_image_tags[0]}",
-        **env,
-    )
-    # @formatter:on
-
-    with open(docker_file, "w") as fw:
-        fw.write(docker_file_str)
-
-    payload = docker_file.parent / "payload"
-    payload.mkdir(parents=True, exist_ok=True)
-
-    # setup.sh
-    shutil.copy(
-        src=pathlib.Path(
-            env["CONFIGS_ROOT"],
-            "entrypoint",
-            "setup.sh",
-        ).expanduser(),
-        dst=payload,
-    )
-
-    # run.sh
-    shutil.copy(
-        src=pathlib.Path(
-            env["CONFIGS_ROOT"],
-            "entrypoint",
-            "run.sh",
-        ).expanduser(),
-        dst=payload,
-    )
-
-    with open(docker_file, "r") as fr:
-        docker_file_content = fr.read()
-
-    #################################################
-
-    image_data, logs = create_image(
-        context=context,
-        image_name=image_name,
-        image_prefixes=image_prefixes,
-        tags=tags,
-        docker_image=docker_image,
-        docker_config=docker_config,
-        docker_config_json=docker_config_json,
-        docker_file=docker_file,
-    )
-
-    yield Output(image_data)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(image_data),
-            "docker_file": MetadataValue.md(f"```shell\n{docker_file_content}\n```"),
-            "env": MetadataValue.json(env),
-            "logs": MetadataValue.json(logs),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    ins={
-        "env": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
     },
 )
 def compose_networks(
     context: AssetExecutionContext,
-    env: Dict,  # pylint: disable=redefined-outer-name
+    CONFIG: Config,  # pylint: disable=redefined-outer-name
 ) -> Generator[
     Output[Dict[str, Dict[str, Dict[str, str]]]] | AssetMaterialization, None, None
 ]:
+
+    env: Dict = CONFIG.env
 
     compose_network_mode = DockerComposePolicies.NETWORK_MODE.BRIDGE
 
@@ -334,10 +126,7 @@ def compose_networks(
         metadata={
             "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
             "compose_network_mode": MetadataValue.text(compose_network_mode.value),
-            "docker_dict": MetadataValue.md(
-                f"```json\n{json.dumps(docker_dict, indent=2)}\n```"
-            ),
-            "docker_yaml": MetadataValue.md(f"```shell\n{docker_yaml}\n```"),
+            "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
         },
     )
 
@@ -345,27 +134,101 @@ def compose_networks(
 @asset(
     **ASSET_HEADER,
     ins={
-        "env": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "env"]),
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
-        "build": AssetIn(
-            AssetKey([*ASSET_HEADER["key_prefix"], "build_docker_image"]),
+    },
+)
+def download_sources(
+    context: AssetExecutionContext,
+    CONFIG: Config,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    tar = CONFIG.likec4_DATA_ROOT_expanded.joinpath("tar")
+
+    tar.mkdir(parents=True, exist_ok=True)
+
+    downloaded_file = download_file(
+        url=CONFIG.likec4_sources,
+        dest_folder=tar,
+    )
+
+    yield Output(downloaded_file)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(downloaded_file),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
+        ),
+        "download_sources": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "download_sources"]),
+        ),
+    },
+)
+def extract_sources(
+    context: AssetExecutionContext,
+    CONFIG: Config,  # pylint: disable=redefined-outer-name
+    download_sources: pathlib.Path,  # pylint: disable=redefined-outer-name
+) -> Generator[Output[pathlib.Path] | AssetMaterialization, None, None]:
+
+    extract = CONFIG.likec4_DATA_ROOT_expanded.joinpath("extract")
+    extract.mkdir(parents=True, exist_ok=True)
+
+    subprocess.run(
+        [
+            shutil.which("tar"),
+            "xzvf",
+            download_sources.as_posix(),
+            "--strip-components=1",
+            "-C",
+            extract.as_posix(),
+        ]
+    )
+
+    yield Output(extract)
+
+    yield AssetMaterialization(
+        asset_key=context.asset_key,
+        metadata={
+            "__".join(context.asset_key.path): MetadataValue.path(extract),
+        },
+    )
+
+
+@asset(
+    **ASSET_HEADER,
+    ins={
+        "CONFIG": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "CONFIG"]),
         ),
         "compose_networks": AssetIn(
             AssetKey([*ASSET_HEADER["key_prefix"], "compose_networks"]),
+        ),
+        "extract_sources": AssetIn(
+            AssetKey([*ASSET_HEADER["key_prefix"], "extract_sources"]),
         ),
     },
 )
 def compose_likec4(
     context: AssetExecutionContext,
-    env: Dict,  # pylint: disable=redefined-outer-name
-    build: Dict,  # pylint: disable=redefined-outer-name
+    CONFIG: Config,  # pylint: disable=redefined-outer-name
     compose_networks: Dict,  # pylint: disable=redefined-outer-name
+    extract_sources: pathlib.Path,  # pylint: disable=redefined-outer-name
 ) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
     """ """
 
-    context.log.warning(f"{build = }")
-    # build = {'image_name': 'likec4_build_docker_image', 'image_prefixes': 'registry.openstudiolandscapes.lan:5000/openstudiolandscapes/', 'image_tags': ['2025-11-17-13-20-22-c96f238d9b634fa6b4f9bda78e67155e'], 'image_parent': {'image_name': 'openstudiolandscapes_base_build_docker_image', 'image_prefixes': 'registry.openstudiolandscapes.lan:5000/openstudiolandscapes/', 'image_tags': ['2025-11-17-13-20-22-c96f238d9b634fa6b4f9bda78e67155e'], 'image_parent': {}}}
+    env: Dict = CONFIG.env
+
+    config_engine: ConfigEngine = CONFIG.config_engine
 
     network_dict = {}
     ports_dict = {}
@@ -374,13 +237,20 @@ def compose_likec4(
         network_dict = {"networks": list(compose_networks.get("networks", {}).keys())}
         ports_dict = {
             "ports": [
-                f"{env['LIKEC4_DEV_PORT_HOST']}:{env['LIKEC4_DEV_PORT_CONTAINER']}",
+                f"{CONFIG.likec4_LIKEC4_DEV_PORT_HOST}:{CONFIG.likec4_LIKEC4_DEV_PORT_CONTAINER}",  # Web UI
+                f"{CONFIG.likec4_LIKEC4_RT_DEV_PORT_HOST}:{CONFIG.likec4_LIKEC4_RT_DEV_PORT_CONTAINER}",  # realtime update
             ]
         }
     elif "network_mode" in compose_networks:
         network_dict = {"network_mode": compose_networks["network_mode"]}
 
-    volumes_dict = {"volumes": []}
+    volumes_dict = {
+        "volumes": [
+            f"{extract_sources.as_posix()}:/data:rw",
+        ]
+    }
+
+    CONFIG.likec4_DATA_ROOT_expanded.mkdir(parents=True, exist_ok=True)
 
     # For portability, convert absolute volume paths to relative paths
 
@@ -392,7 +262,7 @@ def compose_likec4(
 
         volume_dir_host_rel_path = get_relative_path_via_common_root(
             context=context,
-            path_src=pathlib.Path(env["DOCKER_COMPOSE"]),
+            path_src=CONFIG.docker_compose_expanded,
             path_dst=pathlib.Path(host),
             path_common_root=pathlib.Path(env["DOT_LANDSCAPES"]),
         )
@@ -412,7 +282,7 @@ def compose_likec4(
         context=context,
         service_name=service_name,
         landscape_id=env.get("LANDSCAPE", "default"),
-        domain_lan=env.get("OPENSTUDIOLANDSCAPES__DOMAIN_LAN"),
+        domain_lan=config_engine.openstudiolandscapes__domain_lan,
     )
     # container_name = "--".join([service_name, env.get("LANDSCAPE", "default")])
     # host_name = ".".join(
@@ -420,40 +290,31 @@ def compose_likec4(
     # )
 
     docker_dict = {
-        # "networks": compose_networks.get("networks", []),
         "services": {
             service_name: {
                 "container_name": container_name,
                 "hostname": host_name,
-                "domainname": env["OPENSTUDIOLANDSCAPES__DOMAIN_LAN"],
-                "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
-                # "image": "${DOT_OVERRIDES_REGISTRY_NAMESPACE:-docker.io/openstudiolandscapes}/%s:%s"
-                # % (build["image_name"], build["image_tags"][0]),
-                "image": "%s%s:%s"
-                % (
-                    build["image_prefixes"],
-                    build["image_name"],
-                    build["image_tags"][0],
-                ),
-                **copy.deepcopy(network_dict),
-                **copy.deepcopy(volumes_dict),
-                "command": [
-                    "--host",
-                    env["LIKEC4_HOST"],
-                    "--port",
-                    env["LIKEC4_DEV_PORT_CONTAINER"],
-                ],
-                "healthcheck": {
-                    "test": [
-                        "CMD",
-                        "curl",
-                        "-f",
-                        f"http://localhost:{env['LIKEC4_DEV_PORT_CONTAINER']}",
-                    ],
-                    "interval": "10s",
-                    "timeout": "2s",
-                    "retries": "3",
+                "domainname": config_engine.openstudiolandscapes__domain_lan,
+                # "restart": DockerComposePolicies.RESTART_POLICY.ALWAYS.value,
+                "image": CONFIG.likec4_docker_image,
+                "restart": DockerComposePolicies.RESTART_POLICY.UNLESS_STOPPED.value,
+                "environment": {
+                    "CHOKIDAR_USEPOLLING": str(CONFIG.likec4_LIKEC4_CHOKIDAR_USEPOLLING),
+                    "CHOKIDAR_INTERVAL": str(CONFIG.likec4_LIKEC4_CHOKIDAR_INTERVAL),
                 },
+                "command": [
+                    "start",
+                    "/data",
+                ],
+                # "healthcheck": {
+                #     "test": ["CMD", "curl", "-f", f"http://localhost:{env_base.get('DAGSTER_DEV_PORT_CONTAINER')}"],
+                #     "test": "curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1",
+                #     "interval": "1m",
+                #     "timeout": "10s",
+                #     "retries": "3",
+                # },
+                **copy.deepcopy(volumes_dict),
+                **copy.deepcopy(network_dict),
                 **copy.deepcopy(ports_dict),
             },
         },
@@ -466,9 +327,7 @@ def compose_likec4(
     yield AssetMaterialization(
         asset_key=context.asset_key,
         metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(docker_dict),
             "docker_yaml": MetadataValue.md(f"```yaml\n{docker_yaml}\n```"),
-            # Todo: "cmd_docker_run": MetadataValue.path(cmd_list_to_str(cmd_docker_run)),
         },
     )
 
@@ -489,72 +348,6 @@ def compose_maps(
     ret = list(kwargs.values())
 
     context.log.info(ret)
-
-    yield Output(ret)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    ins={
-        "features_in": AssetIn(AssetKey([*ASSET_HEADER["key_prefix"], "group_in"])),
-    },
-)
-def docker_image(
-    context: AssetExecutionContext,
-    features_in: Dict,
-) -> Generator[Output[Dict] | AssetMaterialization, None, None]:
-
-    context.log.info(features_in)
-
-    _docker_image: Dict = features_in.pop("docker_image")
-    context.log.info(_docker_image)
-
-    yield Output(_docker_image)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "docker_image": MetadataValue.json(_docker_image),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    ins={},
-)
-def cmd_extend(
-    context: AssetExecutionContext,
-) -> Generator[Output[List[Any]] | AssetMaterialization | Any, Any, None]:
-
-    ret = []
-
-    yield Output(ret)
-
-    yield AssetMaterialization(
-        asset_key=context.asset_key,
-        metadata={
-            "__".join(context.asset_key.path): MetadataValue.json(ret),
-        },
-    )
-
-
-@asset(
-    **ASSET_HEADER,
-    ins={},
-)
-def cmd_append(
-    context: AssetExecutionContext,
-) -> Generator[Output[Dict[str, List[Any]]] | AssetMaterialization | Any, Any, None]:
-
-    ret = {"cmd": [], "exclude_from_quote": []}
 
     yield Output(ret)
 
