@@ -18,7 +18,9 @@ CONFIG_STR = config_default.read_text()
 
 
 class Releases(enum.StrEnum):
-    release_v1_46_3 = "https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz"
+    release_v1_46_3 = (
+        "https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz"
+    )
 
 
 class DockerImages(enum.StrEnum):
