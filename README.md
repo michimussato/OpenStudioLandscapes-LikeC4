@@ -381,9 +381,6 @@ likec4_DATA_ROOT: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data'
 # Examples:
 #     ['release_v1_46_3']
 likec4_sources: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
-
-
-
 ```
 
 ***
@@ -509,4 +506,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-23 13:35:01 UTC**
+Last changed: **2025-12-23 13:37:21 UTC**
