@@ -9,12 +9,12 @@ from pydantic import (
 
 LOGGER = get_dagster_logger(__name__)
 
+from OpenStudioLandscapes.engine.config.str_gen import get_config_str
 from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 from OpenStudioLandscapes.LikeC4 import dist
 
 config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
-CONFIG_STR = config_default.read_text()
 
 
 class Releases(enum.StrEnum):
@@ -31,8 +31,6 @@ class DockerImages(enum.StrEnum):
 
 class Config(FeatureBaseModel):
     feature_name: str = dist.name
-
-    definitions: str = "OpenStudioLandscapes.LikeC4.definitions"
 
     # https://likec4.dev/tooling/docker/#start-local-web-server
 
@@ -107,3 +105,9 @@ class Config(FeatureBaseModel):
             )
         )
         return ret
+
+
+CONFIG_STR = get_config_str(
+    Config=Config,
+)
+
