@@ -14,8 +14,6 @@ from OpenStudioLandscapes.engine.config.models import FeatureBaseModel
 
 from OpenStudioLandscapes.LikeC4 import dist
 
-config_default = pathlib.Path(__file__).parent.joinpath("config_default.yml")
-
 
 class Releases(enum.StrEnum):
     release_v1_46_3 = (
