@@ -56,28 +56,235 @@ A local config store location will be created if it doesn't exist, together with
 The following settings are available in `OpenStudioLandscapes-LikeC4` and are accessible throughout the [`OpenStudioLandscapes-LikeC4`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/OpenStudioLandscapes/LikeC4/config/models.py) package.
 
 ```yaml
-# Base Information
-group_name: "OpenStudioLandscapes_LikeC4"
-key_prefixes:
-  - "OpenStudioLandscapes_LikeC4"
+# ===
+# env
+# ---
+#
+# Type: typing.Dict
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
 
-#compose_scope: "default"
 
-#enabled: true
+# =============
+# config_engine
+# -------------
+#
+# Type: <class 'OpenStudioLandscapes.engine.config.models.ConfigEngine'>
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
 
-#likec4_docker_image: "docker.io/likec4/likec4"
 
-#likec4_LIKEC4_DEV_PORT_HOST: 5173
-#likec4_LIKEC4_DEV_PORT_CONTAINER: 5173
-#likec4_LIKEC4_RT_DEV_PORT_HOST: 24678
-#likec4_LIKEC4_RT_DEV_PORT_CONTAINER: 24678
+# =============
+# config_parent
+# -------------
+#
+# Type: <class 'OpenStudioLandscapes.engine.config.models.FeatureBaseModel'>
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
 
-#likec4_LIKEC4_CHOKIDAR_USEPOLLING: 1
-#likec4_LIKEC4_CHOKIDAR_INTERVAL: 200
 
-#likec4_DATA_ROOT: "{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data"
+# ============
+# distribution
+# ------------
+#
+# Type: <class 'importlib.metadata.Distribution'>
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
 
-#likec4_sources: "https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz"
+
+# ==========
+# group_name
+# ----------
+#
+# Type: <class 'str'>
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
+
+
+# ============
+# key_prefixes
+# ------------
+#
+# Type: typing.List[str]
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         None
+
+
+# =======
+# enabled
+# -------
+#
+# Type: <class 'bool'>
+# Base Class:
+#     Description:
+#         Whether the Feature is enabled or not.
+#     Default value:
+#         True
+
+
+# =============
+# compose_scope
+# -------------
+#
+# Type: <class 'str'>
+# Base Class:
+#     Description:
+#         None
+#     Default value:
+#         default
+
+
+# ============
+# feature_name
+# ------------
+#
+# Type: <class 'str'>
+# Base Class:
+#     Description:
+#         The name of the feature. It is derived from the `OpenStudioLandscapes.<Feature>.dist` attribute.
+#     Default value:
+#         PydanticUndefined
+feature_name: OpenStudioLandscapes-LikeC4
+
+
+# ==============
+# docker_compose
+# --------------
+#
+# Type: <class 'pathlib.Path'>
+# Base Class:
+#     Description:
+#         The path to the `docker-compose.yml` file.
+#     Default value:
+#         {DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml
+
+
+# ===================
+# likec4_docker_image
+# -------------------
+#
+# Type: <enum 'DockerImages'>
+# Sub Class Description:
+#     The LikeC4 Docker image.
+# Examples:
+#     ['dockerhub', 'github_container_registry']
+likec4_docker_image: docker.io/likec4/likec4
+
+
+# ===========================
+# likec4_LIKEC4_DEV_PORT_HOST
+# ---------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     The LikeC4 host port.
+# Examples:
+#     None
+likec4_LIKEC4_DEV_PORT_HOST: 5173
+
+
+# ================================
+# likec4_LIKEC4_DEV_PORT_CONTAINER
+# --------------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     The LikeC4 container port.
+# Examples:
+#     None
+likec4_LIKEC4_DEV_PORT_CONTAINER: 5173
+
+
+# ==============================
+# likec4_LIKEC4_RT_DEV_PORT_HOST
+# ------------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     The LikeC4 realtime update host port.
+# Examples:
+#     None
+likec4_LIKEC4_RT_DEV_PORT_HOST: 24678
+
+
+# ===================================
+# likec4_LIKEC4_RT_DEV_PORT_CONTAINER
+# -----------------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     The LikeC4 realtime update container port.
+# Examples:
+#     None
+likec4_LIKEC4_RT_DEV_PORT_CONTAINER: 24678
+
+
+# =================================
+# likec4_LIKEC4_CHOKIDAR_USEPOLLING
+# ---------------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     None
+# Examples:
+#     None
+likec4_LIKEC4_CHOKIDAR_USEPOLLING: 1
+
+
+# ===============================
+# likec4_LIKEC4_CHOKIDAR_INTERVAL
+# -------------------------------
+#
+# Type: <class 'int'>
+# Sub Class Description:
+#     None
+# Examples:
+#     None
+likec4_LIKEC4_CHOKIDAR_INTERVAL: 200
+
+
+# ================
+# likec4_DATA_ROOT
+# ----------------
+#
+# Type: <class 'pathlib.Path'>
+# Sub Class Description:
+#     The host side LikeC4 datastore destination.
+# Examples:
+#     None
+likec4_DATA_ROOT: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data'
+
+
+# ==============
+# likec4_sources
+# --------------
+#
+# Type: <enum 'Releases'>
+# Sub Class Description:
+#     None
+# Examples:
+#     ['release_v1_46_3']
+likec4_sources: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
+
+
 
 ```
 
@@ -204,4 +411,4 @@ Currently, the following Python interpreters are enabled for testing:
 
 ***
 
-Last changed: **2025-12-19 21:11:34 UTC**
+Last changed: **2025-12-23 12:26:17 UTC**
