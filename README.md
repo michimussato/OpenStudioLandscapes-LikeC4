@@ -7,7 +7,9 @@
    2. [Install](#install)
    3. [Configure](#configure)
       1. [Default Configuration](#default-configuration)
-2. [Community](#community)
+2. [External Resources](#external-resources)
+   1. [Official Documentation](#official-documentation)
+3. [Community](#community)
 
 ***
 
@@ -420,6 +422,21 @@ likec4_sources: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.g
 
 ***
 
+# External Resources
+
+[![Logo LikeC4 ](https://likec4.dev/_astro/logo-dark.h9QdQ6Li.svg)](https://likec4.dev/)
+
+Design, visualize, and maintain documentation with a modern [DSL](https://en.wikipedia.org/wiki/Domain-specific_language). Version controlled with your code: Architecture-as-Code.
+
+LikeC4 is an open source architecture modeling tool based on the [C4 Model](https://structurizr.com/).
+
+## Official Documentation
+
+- [Website](https://likec4.dev/)
+- [Docs](https://likec4.dev/tutorial/)
+- [Playground](https://playground.likec4.dev/w/tutorial/index/)
+- [GitHub](https://github.com/likec4/likec4)
+
 ***
 
 # Community
@@ -443,4 +460,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2025-12-26 13:35:01 UTC**
+Last changed: **2025-12-28 10:21:40 UTC**
