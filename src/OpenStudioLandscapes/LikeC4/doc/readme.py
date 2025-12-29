@@ -59,7 +59,7 @@ def readme_feature(
             "[Website](https://likec4.dev/)",
             "[Docs](https://likec4.dev/tutorial/)",
             "[Playground](https://playground.likec4.dev/w/tutorial/index/)",
-            "[GitHub](https://github.com/likec4/likec4)"
+            "[GitHub](https://github.com/likec4/likec4)",
         ]
     )
 
