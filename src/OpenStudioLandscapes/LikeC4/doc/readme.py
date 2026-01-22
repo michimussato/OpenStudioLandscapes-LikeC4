@@ -19,35 +19,25 @@ def readme_feature(
 
     doc.add_paragraph(
         snakemd.Inline(
-            text=textwrap.dedent(
-                """\
+            text=textwrap.dedent("""\
                 Logo LikeC4\
-                """
-            ),
+                """),
             image="https://likec4.dev/_astro/logo-dark.h9QdQ6Li.svg",
             link="https://likec4.dev/",
         ).__str__()
     )
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             Design, visualize, and maintain documentation with a modern 
             [DSL](https://en.wikipedia.org/wiki/Domain-specific_language). 
             Version controlled with your code: 
             Architecture-as-Code.\
-            """
-        )
-    )
+            """))
 
-    doc.add_paragraph(
-        text=textwrap.dedent(
-            """\
+    doc.add_paragraph(text=textwrap.dedent("""\
             LikeC4 is an open source architecture modeling tool based
             on the [C4 Model](https://structurizr.com/).\
-            """
-        )
-    )
+            """))
 
     doc.add_heading(
         text="Official Documentation",
