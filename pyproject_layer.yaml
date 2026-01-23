@@ -2,17 +2,19 @@ project:
   description: LikeC4 Feature for OpenStudioLandscapes
   name: OpenStudioLandscapes-LikeC4
   optional-dependencies:
+    optional-base:
+    - OpenStudioLandscapes @ git+https://github.com/michimussato/OpenStudioLandscapes.git
     dev:
-    - OpenStudioLandscapes-LikeC4[testing]
     - OpenStudioLandscapes-LikeC4[lint]
-    - OpenStudioLandscapes-LikeC4[nox]
     - OpenStudioLandscapes-LikeC4[sbom]
-    - OpenStudioLandscapes-LikeC4[coverage]
     - OpenStudioLandscapes-LikeC4[readme]
-    nox:
-    - OpenStudioLandscapes-LikeC4[testing]
+    lint:
+    - OpenStudioLandscapes-LikeC4[optional-base]
+    readme:
+    - OpenStudioLandscapes-LikeC4[optional-base]
     sbom:
     - OpenStudioLandscapes-LikeC4[graphviz]
+    - OpenStudioLandscapes-LikeC4[optional-base]
   urls:
     Homepage: https://github.com/michimussato/OpenStudioLandscapes-LikeC4
 tool:
