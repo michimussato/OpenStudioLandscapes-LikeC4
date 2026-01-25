@@ -98,7 +98,7 @@ class Config(FeatureBaseModel):
 
         LOGGER.debug(f"Expanding {self.likec4_DATA_ROOT}...")
         ret = pathlib.Path(
-            self.likec4_DATA_ROOT.expanduser()
+            self.likec4_DATA_ROOT.expanduser()  # pylint: disable=E1101
             .as_posix()
             .format(
                 **{
