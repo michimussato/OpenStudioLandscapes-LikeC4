@@ -91,6 +91,46 @@ The following settings are available in `OpenStudioLandscapes-LikeC4` and are ba
 #     None
 
 
+# ==================
+# local_bind_volumes
+# ------------------
+#
+# Type: typing.List[str]
+# Base Class Info:
+#     Required:
+#         False
+#     Description:
+#         Here you can define Feature specific, arbitrary, absolute bind volume mappings.
+#     Default value:
+#         PydanticUndefined
+# Description:
+#     Here you can define Feature specific, arbitrary, absolute bind volume mappings.
+# Required:
+#     False
+# Examples:
+#     None
+
+
+# ===========================
+# local_environment_variables
+# ---------------------------
+#
+# Type: typing.Dict[str, str]
+# Base Class Info:
+#     Required:
+#         False
+#     Description:
+#         Here you can define Feature specific, arbitrary environment variables.
+#     Default value:
+#         PydanticUndefined
+# Description:
+#     Here you can define Feature specific, arbitrary environment variables.
+# Required:
+#     False
+# Examples:
+#     None
+
+
 # =============
 # config_engine
 # -------------
@@ -454,4 +494,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-01-25 17:57:37 UTC**
+Last changed: **2026-01-25 23:22:17 UTC**
