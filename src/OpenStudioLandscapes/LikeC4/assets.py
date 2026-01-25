@@ -274,9 +274,12 @@ def compose_likec4(
         )
 
     volumes_dict = {
-        "volumes": [
-            *_volume_relative,
-        ]
+        "volumes": list(
+            {
+                *_volume_relative,
+                *config_engine.global_bind_volumes,
+            }
+        )
     }
 
     service_name = "likec4"
@@ -305,6 +308,7 @@ def compose_likec4(
                         CONFIG.likec4_LIKEC4_CHOKIDAR_USEPOLLING
                     ),
                     "CHOKIDAR_INTERVAL": str(CONFIG.likec4_LIKEC4_CHOKIDAR_INTERVAL),
+                    **config_engine.global_environment_variables,
                 },
                 "command": [
                     "start",
