@@ -572,19 +572,6 @@
         "message-id": "C0103"
     },
     {
-        "type": "error",
-        "module": "OpenStudioLandscapes.LikeC4.config.models",
-        "obj": "Config.likec4_DATA_ROOT_expanded",
-        "line": 101,
-        "column": 12,
-        "endLine": 101,
-        "endColumn": 44,
-        "path": "src/OpenStudioLandscapes/LikeC4/config/models.py",
-        "symbol": "no-member",
-        "message": "Instance of 'FieldInfo' has no 'expanduser' member",
-        "message-id": "E1101"
-    },
-    {
         "type": "convention",
         "module": "OpenStudioLandscapes.LikeC4.doc.readme",
         "obj": "",
