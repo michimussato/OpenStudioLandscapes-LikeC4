@@ -278,6 +278,7 @@ def compose_likec4(
             {
                 *_volume_relative,
                 *config_engine.global_bind_volumes,
+                *CONFIG.local_bind_volumes,
             }
         )
     }
@@ -309,6 +310,7 @@ def compose_likec4(
                     ),
                     "CHOKIDAR_INTERVAL": str(CONFIG.likec4_LIKEC4_CHOKIDAR_INTERVAL),
                     **config_engine.global_environment_variables,
+                    **CONFIG.local_environment_variables,
                 },
                 "command": [
                     "start",
