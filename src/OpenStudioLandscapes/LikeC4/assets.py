@@ -305,7 +305,7 @@ def compose_likec4(
                 "image": CONFIG.likec4_docker_image.value,
                 "restart": DockerComposePolicies.RESTART_POLICY.UNLESS_STOPPED.value,
                 "environment": {
-                    "TZ": CONFIG.tz,
+                    "TZ": config_engine.tz,
                     "CHOKIDAR_USEPOLLING": str(
                         CONFIG.likec4_LIKEC4_CHOKIDAR_USEPOLLING
                     ),
