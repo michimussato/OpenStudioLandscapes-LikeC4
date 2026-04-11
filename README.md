@@ -8,7 +8,7 @@
       1. [Clone and Install](#clone-and-install)
    3. [Configure](#configure)
       1. [Default Configuration](#default-configuration)
-   4. [Local Development](#local-development)
+   4. [Local Development/Unit Testing/Debugging](#local-developmentunit-testingdebugging)
 2. [External Resources](#external-resources)
    1. [Official Documentation](#official-documentation)
 3. [Community](#community)
@@ -73,7 +73,7 @@ A local config store location will be created if it doesn't exist, together with
 > controlled repository. This makes it easy to track changes
 > you made to the `config.yml`.
 
-The following settings are available in `OpenStudioLandscapes-LikeC4` and are based on [`OpenStudioLandscapes-LikeC4/tree/main/OpenStudioLandscapes/LikeC4/config/models.py`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/OpenStudioLandscapes/LikeC4/config/models.py).
+The following settings are available in `OpenStudioLandscapes-LikeC4` and are based on [`OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/config/models.py`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/config/models.py).
 
 ### Default Configuration
 
@@ -435,10 +435,12 @@ likec4_sources: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.g
 </details>
 
 
-## Local Development
+## Local Development/Unit Testing/Debugging
+
+This is for isolated development, unit testing and debugging. Instead of the [`OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/definitions.py`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/definitions.py), the accompanying [`OpenStudioLandscapes-LikeC4/tree/main/workspace.yaml`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/workspace.yaml) loads the [`OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/_definitions_with_upstream_specs.py`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/src/OpenStudioLandscapes/LikeC4/_definitions_with_upstream_specs.py) which also contains [`AssetSpec`](https://release-1-9-13.archive.dagster-docs.io/api/dagster/assets#dagster.AssetSpec) definitions for upstream dependencies as [external assets](https://release-1-9-13.archive.dagster-docs.io/guides/build/assets/external-assets).
 
 ```shell
-cd ./.features/OpenStudioLandscapes-LikeC4
+# cd ./.features/OpenStudioLandscapes-LikeC4
 python3.11 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip setuptools setuptools_scm wheel
@@ -495,4 +497,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-04-11 01:56:45 UTC**
+Last changed: **2026-04-11 11:19:41 UTC**
