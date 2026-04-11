@@ -8,6 +8,7 @@
       1. [Clone and Install](#clone-and-install)
    3. [Configure](#configure)
       1. [Default Configuration](#default-configuration)
+   4. [Local Development](#local-development)
 2. [External Resources](#external-resources)
    1. [Official Documentation](#official-documentation)
 3. [Community](#community)
@@ -39,7 +40,6 @@ source .venv/bin/activate
 openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-LikeC4.git
 deactivate
 # Check the resulting console output for installation instructions
-
 ```
 
 ### Clone and Install
@@ -50,7 +50,6 @@ source .venv/bin/activate
 openstudiolandscapes clone-feature --repo=https://github.com/michimussato/OpenStudioLandscapes-LikeC4.git \
     && pip install --editable ./.features/OpenStudioLandscapes-LikeC4
 deactivate
-
 ```
 
 For more info on `pip` see [VCS Support of `pip`](https://pip.pypa.io/en/stable/topics/vcs-support/).
@@ -77,7 +76,6 @@ A local config store location will be created if it doesn't exist, together with
 The following settings are available in `OpenStudioLandscapes-LikeC4` and are based on [`OpenStudioLandscapes-LikeC4/tree/main/OpenStudioLandscapes/LikeC4/config/models.py`](https://github.com/michimussato/OpenStudioLandscapes-LikeC4/tree/main/OpenStudioLandscapes/LikeC4/config/models.py).
 
 ### Default Configuration
-
 
 <details open>
 <summary><code>config.yml</code></summary>
@@ -434,9 +432,19 @@ likec4_DATA_ROOT: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data'
 likec4_sources: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
 ```
 
-
 </details>
 
+
+## Local Development
+
+```shell
+cd ./.features/OpenStudioLandscapes-LikeC4
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip setuptools setuptools_scm wheel
+pip install --editable .[dev]
+dagster dev --workspace workspace.yaml
+```
 
 ***
 
@@ -487,4 +495,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-04-03 02:47:24 UTC**
+Last changed: **2026-04-11 01:56:45 UTC**
