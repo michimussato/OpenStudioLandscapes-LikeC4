@@ -6,6 +6,7 @@ from dagster import get_dagster_logger
 from pydantic import (
     Field,
     PositiveInt,
+    computed_field,
 )
 
 LOGGER = get_dagster_logger(__name__)
@@ -89,6 +90,7 @@ class Config(FeatureBaseModel):
     )
 
     # EXPANDABLE PATHS
+    @computed_field
     @property
     def likec4_DATA_ROOT_expanded(self) -> pathlib.Path:
         LOGGER.debug(f"{self.env = }")
