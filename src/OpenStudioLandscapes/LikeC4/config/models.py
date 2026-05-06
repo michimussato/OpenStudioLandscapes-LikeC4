@@ -8,7 +8,7 @@ from pydantic import (
     PositiveInt,
 )
 
-from OpenStudioLandscapes.LikeC4 import constants, dist, LOGGER
+from OpenStudioLandscapes.LikeC4 import LOGGER, constants, dist
 
 
 class Releases(enum.StrEnum):
