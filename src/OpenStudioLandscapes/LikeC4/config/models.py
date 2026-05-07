@@ -9,9 +9,9 @@ from pydantic import (
 )
 
 from OpenStudioLandscapes.LikeC4 import (
-    dist,
     LOGGER,
     constants,
+    dist,
 )
 
 
