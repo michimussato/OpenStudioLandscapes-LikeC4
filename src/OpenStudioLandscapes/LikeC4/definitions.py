@@ -4,7 +4,10 @@ from dagster import (
 )
 
 import OpenStudioLandscapes.LikeC4.assets
-from OpenStudioLandscapes.LikeC4 import *
+from OpenStudioLandscapes.LikeC4 import (
+    dist,
+    LOGGER,
+)
 
 LOGGER.info(f"Loading {dist.name} assets...")
 
