@@ -44,8 +44,8 @@ from OpenStudioLandscapes.engine.utils.docker.compose_dicts import (
 )
 
 from OpenStudioLandscapes.LikeC4 import (
-    config,
     ASSET_HEADER,
+    config,
 )
 
 # https://github.com/yaml/pyyaml/issues/722#issuecomment-1969292770
