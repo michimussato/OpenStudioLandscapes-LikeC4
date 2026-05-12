@@ -82,124 +82,109 @@ The following settings are available in `OpenStudioLandscapes-LikeC4` and are ba
 
 
 ```yaml
-$defs:
-  DockerImages:
-    enum:
-    - docker.io/likec4/likec4
-    - ghcr.io/likec4/likec4
-    title: DockerImages
+compose_scope:
+  default: default
+  examples:
+  - default
+  - license_server
+  - worker
+  title: Compose Scope
+  type: string
+docker_compose:
+  default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
+  description: The path to the `docker-compose.yml` file.
+  format: path
+  title: Docker Compose
+  type: string
+enabled:
+  default: true
+  description: Whether the Feature is enabled or not.
+  title: Enabled
+  type: boolean
+env:
+  additionalProperties: true
+  title: Env
+  type: object
+feature_name:
+  default: OpenStudioLandscapes-LikeC4
+  title: Feature Name
+  type: string
+group_name:
+  default: OpenStudioLandscapes_LikeC4
+  title: Group Name
+  type: string
+key_prefixes:
+  default:
+  - OpenStudioLandscapes_LikeC4
+  items:
     type: string
-  Releases:
-    enum:
-    - https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
-    title: Releases
+  title: Key Prefixes
+  type: array
+likec4_DATA_ROOT:
+  default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data'
+  description: The host side LikeC4 datastore destination.
+  format: path
+  title: Likec4 Data Root
+  type: string
+likec4_LIKEC4_CHOKIDAR_INTERVAL:
+  default: 200
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Chokidar Interval
+  type: integer
+likec4_LIKEC4_CHOKIDAR_USEPOLLING:
+  default: 1
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Chokidar Usepolling
+  type: integer
+likec4_LIKEC4_DEV_PORT_CONTAINER:
+  default: 5173
+  description: The LikeC4 container port.
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Dev Port Container
+  type: integer
+likec4_LIKEC4_DEV_PORT_HOST:
+  default: 5173
+  description: The LikeC4 host port.
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Dev Port Host
+  type: integer
+likec4_LIKEC4_RT_DEV_PORT_CONTAINER:
+  default: 24678
+  description: The LikeC4 realtime update container port.
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Rt Dev Port Container
+  type: integer
+likec4_LIKEC4_RT_DEV_PORT_HOST:
+  default: 24678
+  description: The LikeC4 realtime update host port.
+  exclusiveMinimum: 0
+  title: Likec4 Likec4 Rt Dev Port Host
+  type: integer
+likec4_docker_image:
+  $ref: '#/$defs/DockerImages'
+  default: docker.io/likec4/likec4
+  description: The LikeC4 Docker image.
+  examples:
+  - dockerhub
+  - github_container_registry
+likec4_sources:
+  $ref: '#/$defs/Releases'
+  default: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
+  examples:
+  - release_v1_46_3
+local_bind_volumes:
+  description: Here you can define Feature specific, arbitrary, absolute bind volume
+    mappings.
+  items:
     type: string
-properties:
-  compose_scope:
-    default: default
-    examples:
-    - default
-    - license_server
-    - worker
-    title: Compose Scope
+  title: Local Bind Volumes
+  type: array
+local_environment_variables:
+  additionalProperties:
     type: string
-  docker_compose:
-    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/docker_compose/docker-compose.yml'
-    description: The path to the `docker-compose.yml` file.
-    format: path
-    title: Docker Compose
-    type: string
-  enabled:
-    default: true
-    description: Whether the Feature is enabled or not.
-    title: Enabled
-    type: boolean
-  env:
-    additionalProperties: true
-    title: Env
-    type: object
-  feature_name:
-    default: OpenStudioLandscapes-LikeC4
-    title: Feature Name
-    type: string
-  group_name:
-    default: OpenStudioLandscapes_LikeC4
-    title: Group Name
-    type: string
-  key_prefixes:
-    default:
-    - OpenStudioLandscapes_LikeC4
-    items:
-      type: string
-    title: Key Prefixes
-    type: array
-  likec4_DATA_ROOT:
-    default: '{DOT_LANDSCAPES}/{LANDSCAPE}/{FEATURE}/data'
-    description: The host side LikeC4 datastore destination.
-    format: path
-    title: Likec4 Data Root
-    type: string
-  likec4_LIKEC4_CHOKIDAR_INTERVAL:
-    default: 200
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Chokidar Interval
-    type: integer
-  likec4_LIKEC4_CHOKIDAR_USEPOLLING:
-    default: 1
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Chokidar Usepolling
-    type: integer
-  likec4_LIKEC4_DEV_PORT_CONTAINER:
-    default: 5173
-    description: The LikeC4 container port.
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Dev Port Container
-    type: integer
-  likec4_LIKEC4_DEV_PORT_HOST:
-    default: 5173
-    description: The LikeC4 host port.
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Dev Port Host
-    type: integer
-  likec4_LIKEC4_RT_DEV_PORT_CONTAINER:
-    default: 24678
-    description: The LikeC4 realtime update container port.
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Rt Dev Port Container
-    type: integer
-  likec4_LIKEC4_RT_DEV_PORT_HOST:
-    default: 24678
-    description: The LikeC4 realtime update host port.
-    exclusiveMinimum: 0
-    title: Likec4 Likec4 Rt Dev Port Host
-    type: integer
-  likec4_docker_image:
-    $ref: '#/$defs/DockerImages'
-    default: docker.io/likec4/likec4
-    description: The LikeC4 Docker image.
-    examples:
-    - dockerhub
-    - github_container_registry
-  likec4_sources:
-    $ref: '#/$defs/Releases'
-    default: https://github.com/likec4/likec4/archive/refs/tags/v1.46.3.tar.gz
-    examples:
-    - release_v1_46_3
-  local_bind_volumes:
-    description: Here you can define Feature specific, arbitrary, absolute bind volume
-      mappings.
-    items:
-      type: string
-    title: Local Bind Volumes
-    type: array
-  local_environment_variables:
-    additionalProperties:
-      type: string
-    description: Here you can define Feature specific, arbitrary environment variables.
-    title: Local Environment Variables
-    type: object
-title: Config
-type: object
+  description: Here you can define Feature specific, arbitrary environment variables.
+  title: Local Environment Variables
+  type: object
 
 ```
 
@@ -268,4 +253,4 @@ To follow up on the previous LinkedIn publications, visit:
 
 ***
 
-Last changed: **2026-05-09 12:05:10 UTC**
+Last changed: **2026-05-12 09:56:22 UTC**
