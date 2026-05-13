@@ -38,5 +38,5 @@ src/OpenStudioLandscapes/LikeC4/doc/readme.py:6:0: C0116: Missing function or me
 src/OpenStudioLandscapes/LikeC4/doc/readme.py:21:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 8.05/10 (previous run: 5.46/10, +2.59)
+Your code has been rated at 8.05/10 (previous run: 6.23/10, +1.82)
 
