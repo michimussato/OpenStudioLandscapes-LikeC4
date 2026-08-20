@@ -8,7 +8,7 @@ from pydantic import (
     PositiveInt,
 )
 
-from OpenStudioLandscapes.LikeC4 import (
+from OpenStudioLandscapes.LikeC4.constants import (
     ASSET_HEADER,
     LOGGER,
     dist,
