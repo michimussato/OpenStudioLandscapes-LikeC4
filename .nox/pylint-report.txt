@@ -1,23 +1,24 @@
 ************* Module OpenStudioLandscapes.LikeC4.assets
 src/OpenStudioLandscapes/LikeC4/assets.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-src/OpenStudioLandscapes/LikeC4/assets.py:112:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/LikeC4/assets.py:151:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/LikeC4/assets.py:186:0: C0116: Missing function or method docstring (missing-function-docstring)
-src/OpenStudioLandscapes/LikeC4/assets.py:195:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
-src/OpenStudioLandscapes/LikeC4/assets.py:230:0: C0112: Empty function docstring (empty-docstring)
-src/OpenStudioLandscapes/LikeC4/assets.py:230:0: R0914: Too many local variables (19/15) (too-many-locals)
-src/OpenStudioLandscapes/LikeC4/assets.py:361:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:113:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:152:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:187:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:196:4: W1510: 'subprocess.run' used without explicitly defining the value for 'check'. (subprocess-run-check)
+src/OpenStudioLandscapes/LikeC4/assets.py:231:0: C0112: Empty function docstring (empty-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:231:0: R0914: Too many local variables (19/15) (too-many-locals)
+src/OpenStudioLandscapes/LikeC4/assets.py:362:0: C0116: Missing function or method docstring (missing-function-docstring)
+src/OpenStudioLandscapes/LikeC4/assets.py:47:0: W0611: Unused dist imported from OpenStudioLandscapes.LikeC4.constants (unused-import)
 ************* Module OpenStudioLandscapes.LikeC4.definitions
 src/OpenStudioLandscapes/LikeC4/definitions.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/LikeC4/definitions.py:12:0: W1203: Use lazy % formatting in logging functions (logging-fstring-interpolation)
+************* Module OpenStudioLandscapes.LikeC4.constants
+src/OpenStudioLandscapes/LikeC4/constants.py:14:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
+src/OpenStudioLandscapes/LikeC4/constants.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+src/OpenStudioLandscapes/LikeC4/constants.py:38:4: C0103: Constant name "fill" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.LikeC4._definitions_with_upstream_specs
 src/OpenStudioLandscapes/LikeC4/_definitions_with_upstream_specs.py:1:0: C0114: Missing module docstring (missing-module-docstring)
-************* Module OpenStudioLandscapes.LikeC4.__init__
-src/OpenStudioLandscapes/LikeC4/__init__.py:15:5: W0511: TODO: Import directly (no need for conditional) when `python_requires = >= 3.8` (fixme)
 ************* Module OpenStudioLandscapes.LikeC4
-src/OpenStudioLandscapes/LikeC4/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/LikeC4/__init__.py:1:0: C0103: Module name "LikeC4" doesn't conform to snake_case naming style (invalid-name)
-src/OpenStudioLandscapes/LikeC4/__init__.py:39:4: C0103: Constant name "fill" doesn't conform to UPPER_CASE naming style (invalid-name)
 ************* Module OpenStudioLandscapes.LikeC4.config.models
 src/OpenStudioLandscapes/LikeC4/config/models.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 src/OpenStudioLandscapes/LikeC4/config/models.py:18:0: C0115: Missing class docstring (missing-class-docstring)
@@ -38,5 +39,5 @@ src/OpenStudioLandscapes/LikeC4/doc/readme.py:6:0: C0116: Missing function or me
 src/OpenStudioLandscapes/LikeC4/doc/readme.py:21:8: C2801: Unnecessarily calls dunder method __str__. Use str built-in function. (unnecessary-dunder-call)
 
 ------------------------------------------------------------------
-Your code has been rated at 8.05/10 (previous run: 6.23/10, +1.82)
+Your code has been rated at 8.00/10 (previous run: 6.24/10, +1.76)
 
